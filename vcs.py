@@ -25,13 +25,14 @@ def update_latest():
     return latest
 
 
-def backup_source(source, dest_dir):
-    dest = os.path.join(dest_dir, source)
+def clobber_copy(filename, source_dir, dest_dir):
+    dest = os.path.join(dest_dir, filename)
+    source = os.path.join(source_dir, filename)
+    if os.path.isdir(dest):
+        shutil.rmtree(dest)
     if os.path.isfile(source):
         shutil.copy(source, dest)
     if os.path.isdir(source):
-        if os.path.isdir(dest):
-            shutil.rmtree(dest)
         shutil.copytree(source, dest)
 
 
@@ -43,12 +44,27 @@ def backup(args):
     os.mkdir(dest_dir)
     for source in files: 
         if source not in ignore:
-            backup_source(source, dest_dir)
+            clobber_copy(source, '.', dest_dir)
+
+
+def checkout(args):
+    which = args[0]
+    if which == "":
+        print("Please specify which backup you wish to check out")
+        exit(2)
+    if which == "latest":
+        latest_file = open(os.path.join(vcsname, 'latest'), 'r')
+        which = latest_file.readline()
+        latest_file.close()
+    source_dir = os.path.join(vcsname, which)
+    for filename in os.listdir(source_dir):
+        clobber_copy(filename, source_dir, '.')
 
 
 commands = {
     "help": help,
     "backup": backup,
+    "checkout": checkout,
     }
 
 
