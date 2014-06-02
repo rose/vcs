@@ -30,9 +30,11 @@ def clobber_copy(filename, source_dir, dest_dir):
     source = os.path.join(source_dir, filename)
     if os.path.isdir(dest):
         shutil.rmtree(dest)
+    elif os.path.isfile(dest):
+        os.remove(dest)
     if os.path.isfile(source):
         shutil.copy(source, dest)
-    if os.path.isdir(source):
+    elif os.path.isdir(source):
         shutil.copytree(source, dest)
 
 
@@ -45,7 +47,6 @@ def backup(args):
     for source in files: 
         if source not in ignore:
             clobber_copy(source, '.', dest_dir)
-
 
 def checkout(args):
     which = args[0]
