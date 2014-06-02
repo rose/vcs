@@ -48,6 +48,7 @@ def backup(args):
         if source not in ignore:
             clobber_copy(source, '.', dest_dir)
 
+
 def checkout(args):
     which = args[0]
     if which == "":
@@ -58,6 +59,9 @@ def checkout(args):
         which = latest_file.readline()
         latest_file.close()
     source_dir = os.path.join(vcsname, which)
+    if not os.path.isdir(source_dir):
+        print("invalid checkout, no backup named " + which)
+        exit(2)
     for filename in os.listdir(source_dir):
         clobber_copy(filename, source_dir, '.')
 
