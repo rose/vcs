@@ -9,19 +9,30 @@ def help(args):
         print ("  " + c)
 
 
+def make_vcs():
+    os.mkdir(vcsname)
+    latest = open(os.path.join(vcsname, 'latest'), 'w')
+    latest.write('0')
+    latest.close()
+
+
+def backup_source(source):
+    dest = os.path.join(vcsname, source)
+    if os.path.isfile(source):
+        shutil.copy(source, dest)
+    if os.path.isdir(source):
+        if os.path.isdir(dest):
+            shutil.rmtree(dest)
+        shutil.copytree(source, dest)
+
+
 def backup(args):
     files = os.listdir()
-    if vcsname not in files:
-        os.mkdir(vcsname )
-    for source in files:
+    if vcsname not in files: 
+        make_vcs()
+    for source in files: 
         if source not in ignore:
-            dest = os.path.join(vcsname, source)
-            if os.path.isfile(source):
-                shutil.copy(source, dest)
-            if os.path.isdir(source):
-                if os.path.isdir(dest):
-                    shutil.rmtree(dest)
-                shutil.copytree(source, dest)
+            backup_source(source)
 
 
 commands = {
