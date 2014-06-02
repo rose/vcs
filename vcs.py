@@ -16,8 +16,17 @@ def make_vcs():
     latest.close()
 
 
-def backup_source(source):
-    dest = os.path.join(vcsname, source)
+def update_latest():
+    latest_file = open(os.path.join(vcsname, 'latest'), 'r+')
+    latest = str(int(latest_file.readline()) + 1)
+    latest_file.seek(0)
+    latest_file.write(latest)
+    latest_file.close()
+    return latest
+
+
+def backup_source(source, dest_dir):
+    dest = os.path.join(dest_dir, source)
     if os.path.isfile(source):
         shutil.copy(source, dest)
     if os.path.isdir(source):
@@ -30,9 +39,11 @@ def backup(args):
     files = os.listdir()
     if vcsname not in files: 
         make_vcs()
+    dest_dir = os.path.join(vcsname, update_latest())
+    os.mkdir(dest_dir)
     for source in files: 
         if source not in ignore:
-            backup_source(source)
+            backup_source(source, dest_dir)
 
 
 commands = {
