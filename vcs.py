@@ -14,6 +14,9 @@ def make_vcs():
     latest = open(os.path.join(vcsname, 'latest'), 'w')
     latest.write('0')
     latest.close()
+    head = open(os.path.join(vcsname, 'head'), 'w')
+    head.write('0')
+    head.close()
 
 
 def update_latest():
@@ -22,6 +25,7 @@ def update_latest():
     latest_file.seek(0)
     latest_file.write(latest)
     latest_file.close()
+    set_current(latest)
     return latest
 
 
@@ -62,14 +66,33 @@ def checkout(args):
     if not os.path.isdir(source_dir):
         print("invalid checkout, no backup named " + which)
         exit(2)
+    set_current(which)
     for filename in os.listdir(source_dir):
         clobber_copy(filename, source_dir, '.')
+
+
+def set_current(new_head):
+    current_file = open(os.path.join(vcsname, 'head'), 'w')
+    current_file.write(str(new_head))
+    current_file.close()
+
+
+def get_current():
+    current_file = open(os.path.join(vcsname, 'head'))
+    current = current_file.readline()
+    current_file.close()
+    return current
+
+
+def current(args):
+    print("Head is currently at checkout " + get_current())
 
 
 commands = {
     "help": help,
     "backup": backup,
     "checkout": checkout,
+    "current": current,
     }
 
 
