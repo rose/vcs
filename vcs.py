@@ -23,7 +23,10 @@ def help(args):
         print ("  " + c)
 
 
-def make_vcs():
+def init(args):
+    if os.path.exists(vcsname):
+        print("A file or directory named " + vcsname + " already exists.  Remove it and try again.")
+        exit(2)
     os.mkdir(vcsname)
     set('latest', '0')
     set('head', '0')
@@ -53,7 +56,8 @@ def clobber_copy(filename, source_dir, dest_dir):
 def backup(args):
     files = os.listdir()
     if vcsname not in files: 
-        make_vcs()
+        print ("Current directory is not a vcs repository!  Run vcs init.")
+        exit(2)
     update_latest()
     dest_dir = os.path.join(vcsname, get('latest'))
     os.mkdir(dest_dir)
@@ -87,6 +91,7 @@ commands = {
     "backup": backup,
     "checkout": checkout,
     "current": current,
+    "init": init,
     }
 
 
