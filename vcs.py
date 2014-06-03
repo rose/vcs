@@ -1,4 +1,5 @@
 import sys, os, shutil
+import datetime
 
 vcsname = ".vcs"
 ignore = [vcsname, ".git"]
@@ -53,13 +54,19 @@ def clobber_copy(filename, source_dir, dest_dir):
         shutil.copytree(source, dest)
 
 
+def make_info(id, args):
+    date = datetime.datetime.now().strftime("%Y %m %d %H:%M")
+    set(id + '.info', date)
+
+
 def backup(args):
     files = os.listdir()
     if vcsname not in files: 
         print ("Current directory is not a vcs repository!  Run vcs init.")
         exit(2)
-    update_latest()
-    dest_dir = os.path.join(vcsname, get('latest'))
+    latest = update_latest()
+    dest_dir = os.path.join(vcsname, latest)
+    make_info(latest, args)
     os.mkdir(dest_dir)
     for source in files: 
         if source not in ignore:
@@ -86,12 +93,20 @@ def current(args):
     print("Head is currently at checkout " + get('head'))
 
 
+def log(args):
+    infofiles = [int(f[:-5]) for f in os.listdir(vcsname) if '.info' in f]
+    infofiles.sort()
+    for n in infofiles:
+        print(str(n) + " saved on " + get(str(n) + '.info'))
+
+
 commands = {
     "help": help,
     "backup": backup,
     "checkout": checkout,
     "current": current,
     "init": init,
+    "log": log,
     }
 
 
