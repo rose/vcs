@@ -75,7 +75,7 @@ def checkout(args):
         which = get('latest')
     source_dir = os.path.join(vcsname, which)
     if not os.path.isdir(source_dir):
-        print("invalid checkout, no backup named " + which)
+        print("Invalid checkout, no backup named " + which)
         exit(2)
     set('head', which)
     for filename in os.listdir(source_dir):
@@ -97,7 +97,8 @@ commands = {
 
 def run_command(command, args):
     if command not in commands:
-        print (command + " is not a valid command")
+        print ("Invalid command: " + command)
+        commands["help"]([''])
         exit(2)
     commands[command](args)
 
