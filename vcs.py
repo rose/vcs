@@ -3,6 +3,20 @@ import sys, os, shutil
 vcsname = ".vcs"
 ignore = [vcsname, ".git"]
 
+
+def get(filename):
+    f = open(os.path.join(vcsname, filename))
+    value = f.readline()
+    f.close()
+    return value
+
+
+def set(filename, value):
+    f = open(os.path.join(vcsname, filename), 'w')
+    f.write(value)
+    f.close()
+
+
 def help(args):
     print ("Available commands:")
     for c in commands:
@@ -11,22 +25,16 @@ def help(args):
 
 def make_vcs():
     os.mkdir(vcsname)
-    latest = open(os.path.join(vcsname, 'latest'), 'w')
-    latest.write('0')
-    latest.close()
-    head = open(os.path.join(vcsname, 'head'), 'w')
-    head.write('0')
-    head.close()
+    set('latest', '0')
+    set('head', '0')
 
 
 def update_latest():
-    latest_file = open(os.path.join(vcsname, 'latest'), 'r+')
-    latest = str(int(latest_file.readline()) + 1)
-    latest_file.seek(0)
-    latest_file.write(latest)
-    latest_file.close()
-    set_current(latest)
-    return latest
+    old = int(get('latest'))
+    new = str(old + 1)
+    set('latest', new)
+    set('head', new)
+    return new
 
 
 def clobber_copy(filename, source_dir, dest_dir):
@@ -46,7 +54,8 @@ def backup(args):
     files = os.listdir()
     if vcsname not in files: 
         make_vcs()
-    dest_dir = os.path.join(vcsname, update_latest())
+    update_latest()
+    dest_dir = os.path.join(vcsname, get('latest'))
     os.mkdir(dest_dir)
     for source in files: 
         if source not in ignore:
@@ -66,26 +75,13 @@ def checkout(args):
     if not os.path.isdir(source_dir):
         print("invalid checkout, no backup named " + which)
         exit(2)
-    set_current(which)
+    set('head', which)
     for filename in os.listdir(source_dir):
         clobber_copy(filename, source_dir, '.')
 
 
-def set_current(new_head):
-    current_file = open(os.path.join(vcsname, 'head'), 'w')
-    current_file.write(str(new_head))
-    current_file.close()
-
-
-def get_current():
-    current_file = open(os.path.join(vcsname, 'head'))
-    current = current_file.readline()
-    current_file.close()
-    return current
-
-
 def current(args):
-    print("Head is currently at checkout " + get_current())
+    print("Head is currently at checkout " + get('head'))
 
 
 commands = {
