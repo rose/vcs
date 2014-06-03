@@ -68,9 +68,7 @@ def checkout(args):
         print("Please specify which backup you wish to check out")
         exit(2)
     if which == "latest":
-        latest_file = open(os.path.join(vcsname, 'latest'), 'r')
-        which = latest_file.readline()
-        latest_file.close()
+        which = get('latest')
     source_dir = os.path.join(vcsname, which)
     if not os.path.isdir(source_dir):
         print("invalid checkout, no backup named " + which)
