@@ -7,7 +7,7 @@ ignore = [vcsname, ".git"]
 
 def get(filename):
     f = open(os.path.join(vcsname, filename))
-    value = f.readline()
+    value = f.read()
     f.close()
     return value
 
@@ -56,7 +56,11 @@ def clobber_copy(filename, source_dir, dest_dir):
 
 def make_info(id, args):
     date = datetime.datetime.now().strftime("%Y %m %d %H:%M")
-    set(id + '.info', date)
+    message = " ".join(args)
+    if message == '':
+        message = "(no message)"
+    info = date + "\n" + message
+    set(id + '.info', info)
 
 
 def backup(args):
