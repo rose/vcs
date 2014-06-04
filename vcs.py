@@ -29,6 +29,7 @@ def init(args):
         print("A file or directory named " + vcsname + " already exists.  Remove it and try again.")
         exit(2)
     os.mkdir(vcsname)
+    os.mkdir(vcsname + '/parents')
     set('latest', '0')
     set('head', '0')
 
@@ -68,7 +69,9 @@ def backup(args):
     if vcsname not in files: 
         print ("Current directory is not a vcs repository!  Run vcs init.")
         exit(2)
+    parent = get('head')
     latest = update_latest()
+    set ('parents/' + latest, parent)
     dest_dir = os.path.join(vcsname, latest)
     make_info(latest, args)
     os.mkdir(dest_dir)
@@ -97,11 +100,15 @@ def current(args):
     print("Head is currently at checkout " + get('head'))
 
 
+def show_info(n):
+    print(str(n) + " saved on " + get(str(n) + '.info'))
+
+
 def log(args):
-    infofiles = [int(f[:-5]) for f in os.listdir(vcsname) if '.info' in f]
-    infofiles.sort()
-    for n in infofiles:
-        print(str(n) + " saved on " + get(str(n) + '.info'))
+    showing = get('head')
+    while showing != '0':
+        show_info(showing)
+        showing = get('parents/' + showing)
 
 
 commands = {
