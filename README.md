@@ -7,7 +7,7 @@ The examples below assume you've made the vcs file executable and put it somewhe
 
 `vcs help` will list the currently available commands.  It's pretty self-explanatory if you've used git before.
 
-To try it out, clone this (git) repo, and initialize a (vcs) repo in the test directory with `vcs init`.  This will create an empty `.vcs` directory, which you can look around in if you like.  It's a (much) simplified version of the kind of thing git stores in `.git`.
+To try it out, clone this (git) repo, and initialize a (vcs) repo in the test directory with `vcs init`.  This will create a skeleton `.vcs` directory, which you can look around in if you like.  It's a (much) simplified version of the kind of thing git stores in `.git`.
 
 Create a backup with `vcs backup [message]`.  The backup message is optional.  Now change one of the files and make another backup.  `vcs log` will print out the date, time, and message of both backups, along with their message if you entered any.
 
