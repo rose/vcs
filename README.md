@@ -3,7 +3,7 @@ vcs
 
 VCS saves and restores snapshots of the directory from which it's called.  It's a toy system; don't use it for data you care about!  
 
-The examples below assume you've made the vcs file executable and put it somewhere in your path.  If you don't want to do that, you'll have to feed it to python directly, for example using `../python vcs foo` instead of `vcs foo` in the provided test directory.
+The examples below assume you've made the vcs file executable and put it somewhere in your path.  If you don't want to do that, you'll have to feed it to python directly, for example using `../vcs foo` instead of `vcs foo` in the provided test directory.
 
 `vcs help` will list the currently available commands.  It's pretty self-explanatory if you've used git before.
 
